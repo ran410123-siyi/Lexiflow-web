@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LexiFlow</title>
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --card: #ffffff;
+      --primary: #5b7cff;
+      --accent: #f3f6ff;
+      --text: #1f2937;
+      --subtext: #6b7280;
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: var(--subtext);
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 12px;
+      font-size: 14px;
+      resize: none;
+    }
+
+    button {
+      margin-top: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:active {
+      opacity: 0.9;
+    }
+
+    .result-card {
+      background: var(--accent);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>LexiFlow</h1>
+    <div class="subtitle">Capture → Understand → Explain</div>
+
+    <div class="card">
+      <textarea id="input" placeholder="Paste words, phrases, or sentences here..."></textarea>
+      <button onclick="send()">Analyze</button>
+    </div>
+
+    <div class="card">
+      <strong>AI Learning Cards</strong>
+      <div id="output" class="result-card">Waiting for input...</div>
+    </div>
+  </div>
+
+  <script>
+    async function send() {
+      const input = document.getElementById("input").value;
+      const output = document.getElementById("output");
+
+      if (!input.trim()) return;
+
+      output.textContent = "Thinking...";
+
+      const response = await fetch("/api/coze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input })
+      });
+
+      const data = await response.json();
+      output.textContent = data.result || "Something went wrong.";
+    }
+  </script>
+
+</body>
+</html>
